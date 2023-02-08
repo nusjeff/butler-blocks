@@ -1,4 +1,3 @@
-import { useRef, useCallback } from 'react';
 import { useDocumentDisplayer } from 'documentLabeler/components/documentPanel/documentDisplayer/useDocumentDisplayer';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 

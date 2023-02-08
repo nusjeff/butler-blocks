@@ -4,6 +4,7 @@ import { BlockDto, FieldType } from 'common/types/DocumentLabelerTypes';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { HtmlVisibilityUtil } from 'common/util/HtmlVisibilityUtil';
 import { EndUserBlockRenderUtils } from 'documentLabeler/components/documentPanel/documentBlockLayer/utils/EndUserBlockRenderUtils';
+import { coloredBlockPrefixId } from 'documentLabeler/constants/DocumentLabelerConstants';
 
 const TABLE_AREA_HEIGHT = 305;
 
@@ -98,6 +99,7 @@ export const ColoredBlock: React.FC<Props> = ({
 
   return (
     <div
+      id={`${coloredBlockPrefixId}__${block.id}`}
       style={{
         ...coords,
         opacity,

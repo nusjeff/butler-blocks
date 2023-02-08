@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   FieldsContainer: {
     overflowY: 'auto',
     flex: 1,
+    maxHeight: 750,
   },
 }));
 

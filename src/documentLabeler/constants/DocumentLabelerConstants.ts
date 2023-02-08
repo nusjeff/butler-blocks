@@ -11,3 +11,5 @@ export const ZOOM_VALUES = {
   min: 0.7,
   max: 2.5,
 };
+
+export const coloredBlockPrefixId = 'ColoredBlock';
