@@ -152,6 +152,10 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
     <Box
       className={clsx(classes.Root, 'FieldsPanelDisplayRow__root')}
       onClick={handleFieldClick}
+      onDoubleClick={(event) => {
+        event.preventDefault();
+        console.log('on double click');
+      }}
       style={{
         borderLeft: `4px solid ${color}`,
         backgroundColor: fieldIsActive ? alpha(color, 0.1) : 'transparent',
