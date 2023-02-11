@@ -19,7 +19,7 @@ const DocumentImageDisplayer = (props: Props) => {
 
   const { state, dispatch } = useDocumentLabeler();
   const { localState, docInfo } = state;
-  const { renderedImgHeight, activeField } = localState;
+  const { renderedImgHeight, fieldViewing, activeField } = localState;
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef>(null);
 
@@ -41,16 +41,12 @@ const DocumentImageDisplayer = (props: Props) => {
     });
   };
 
-  console.log('activeField', activeField);
-
   useEffect(() => {
-    if (activeField) {
-      const { id } = activeField;
+    if (fieldViewing) {
+      const { id } = fieldViewing;
       const { results } = docInfo;
       const findSelectedField = results.fields.find((field) => field.id === id);
       const [firstBlock] = findSelectedField?.blocks || [];
-
-      console.log('firstBlock', firstBlock);
 
       if (firstBlock) {
         const { boundingBox } = firstBlock;
@@ -59,23 +55,13 @@ const DocumentImageDisplayer = (props: Props) => {
           [imageProps.height || 0],
           width,
         );
-        const scale = 3;
+        const scale = 2.5;
         const xPosition = coords.left * scale;
-        // if (xPosition < 200) {
-        //   xPosition -= 50;
-        // }
         const yPosition = coords.top * scale;
 
-        console.log('params', {
-          xPosition,
-          yPosition,
-          boundingBox,
-          coords,
-        });
-
         transformComponentRef.current?.setTransform(
-          -(xPosition - 300),
-          -(yPosition - 300),
+          -(xPosition - 250),
+          -(yPosition - 250),
           scale,
         );
       } else {
@@ -84,7 +70,7 @@ const DocumentImageDisplayer = (props: Props) => {
     } else {
       transformComponentRef.current?.setTransform(0, 0, 1);
     }
-  }, [activeField, docInfo]);
+  }, [fieldViewing, docInfo, activeField]);
 
   return (
     <TransformWrapper ref={transformComponentRef}>

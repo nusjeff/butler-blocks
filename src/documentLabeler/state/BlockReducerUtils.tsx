@@ -196,6 +196,11 @@ export type SetImageHeight = {
   payload: number;
 };
 
+export type SetViewingField = {
+  type: 'setViewingField';
+  payload: ActiveField | undefined;
+};
+
 const removeBlockFromTableCell = (
   state: DocumentLabelerInternalState,
   action: RemoveBlockFromFieldAction,
