@@ -12,6 +12,7 @@ import {
   IncreasePdfScale,
   DecreasePdfScale,
   SetImageHeight,
+  SetViewingField,
 } from 'documentLabeler/state/BlockReducerUtils';
 import { DocumentLabelerInternalState } from 'documentLabeler/state/DocumentLabelerState';
 import {
@@ -43,7 +44,8 @@ type DocumentLabelerDispatchAction =
   | SetPdfScale
   | IncreasePdfScale
   | DecreasePdfScale
-  | SetImageHeight;
+  | SetImageHeight
+  | SetViewingField;
 
 export type DocumentLabelerDispatch = (
   action: DocumentLabelerDispatchAction,
@@ -140,6 +142,29 @@ export const documentLabelerReducer = (
         },
       };
     }
+
+    case 'setViewingField': {
+      const { fieldViewing } = state.localState;
+      let newViewingField = undefined;
+
+      // current value is undefined
+      if (
+        (!fieldViewing || fieldViewing.id !== action?.payload?.id) &&
+        action.payload !== undefined
+      ) {
+        newViewingField = action.payload;
+      }
+
+      return {
+        ...state,
+        localState: {
+          ...state.localState,
+          activeField: undefined,
+          fieldViewing: newViewingField,
+        },
+      };
+    }
+
     default:
       throw new TypesafeUnreachableError(action);
   }

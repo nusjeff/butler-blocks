@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { alpha, makeStyles, Theme } from '@material-ui/core';
 import { BlockDto, FieldType } from 'common/types/DocumentLabelerTypes';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
@@ -15,6 +15,7 @@ type Props = {
   docRenderWidth: number;
   opacity?: number;
   autoScroll?: boolean;
+  isFieldViewing?: boolean;
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,6 +44,7 @@ export const ColoredBlock: React.FC<Props> = ({
   docRenderWidth,
   opacity = 1,
   autoScroll = false,
+  isFieldViewing,
 }) => {
   const classes = useStyles();
   const { state } = useDocumentLabeler();
@@ -90,11 +92,22 @@ export const ColoredBlock: React.FC<Props> = ({
     setBGColor(alpha(color, 0.2));
   };
 
-  const coords = EndUserBlockRenderUtils.getBlockRenderCoords(
-    block.boundingBox,
-    docPageHeights,
-    docRenderWidth,
-  );
+  const coords = useMemo(() => {
+    const result = EndUserBlockRenderUtils.getBlockRenderCoords(
+      block.boundingBox,
+      docPageHeights,
+      docRenderWidth,
+    );
+
+    if (isFieldViewing) {
+      result.height *= 2.5;
+      result.width *= 2.5;
+      result.top = 250;
+      result.left = 250;
+    }
+
+    return result;
+  }, [block.boundingBox, docPageHeights, docRenderWidth, isFieldViewing]);
 
   return (
     <div

@@ -17,6 +17,7 @@ const setActiveField = (
     localState: {
       ...state.localState,
       activeField: action.payload,
+      fieldViewing: undefined,
     },
   };
 };

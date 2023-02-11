@@ -6,12 +6,13 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import { Close, Create } from '@material-ui/icons';
+import { blue } from '@material-ui/core/colors';
+import { Close, Create, CenterFocusStrong } from '@material-ui/icons';
 import { OutlinedTextField } from 'common/display/OutlinedTextField/OutlinedTextField';
 import { TruncatableTypography } from 'common/display/TruncatableTypography/TruncatableTypography';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { FieldType } from 'common/types/DocumentLabelerTypes';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
 
@@ -81,6 +82,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       pointerEvents: 'none',
     },
   },
+  ViewingField: {
+    color: blue[500],
+  },
 }));
 
 /**
@@ -106,6 +110,7 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
   const [localValue, setLocalValue] = useState<string>(value);
 
   const fieldIsActive = state.localState.activeField?.id === id;
+  const fieldIsViewing = state.localState.fieldViewing?.id === id;
 
   const displayFieldName = fieldDisplayNameFormatter
     ? fieldDisplayNameFormatter(name)
@@ -147,6 +152,20 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
     });
     setEditingText(false);
   };
+
+  const handleFocusField = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
+      dispatch({
+        type: 'setViewingField',
+        payload: {
+          id,
+          type,
+        },
+      });
+    },
+    [state.localState.fieldViewing, id, type],
+  );
 
   return (
     <Box
@@ -238,6 +257,21 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
                 data-testid="clear-field-label-icon"
               >
                 <Close fontSize="small" />
+              </IconButton>
+
+              <IconButton
+                className={clsx(classes.IconButton, {
+                  Hide: !hasValue,
+                })}
+                onClick={handleFocusField}
+                data-testid="clear-field-label-icon"
+              >
+                <CenterFocusStrong
+                  className={clsx({
+                    [classes.ViewingField]: fieldIsViewing,
+                  })}
+                  fontSize="small"
+                />
               </IconButton>
             </Box>
           )}

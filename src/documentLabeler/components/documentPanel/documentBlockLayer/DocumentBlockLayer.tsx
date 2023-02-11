@@ -6,6 +6,7 @@ import {
   BlockUtils,
   ColoredBlockType,
   RegionColoredBlock,
+  FieldColoredBlock,
 } from 'documentLabeler/components/documentPanel/documentBlockLayer/utils/BlockUtils';
 import { EndUserBlockRenderUtils } from 'documentLabeler/components/documentPanel/documentBlockLayer/utils/EndUserBlockRenderUtils';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
@@ -16,7 +17,7 @@ import {
   BlockType,
   FieldType,
 } from 'common/types/DocumentLabelerTypes';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
 
 type Props = {
@@ -50,7 +51,8 @@ export const DocumentBlockLayer: React.FC<Props> = ({
 
   const { state, dispatch } = useDocumentLabeler();
 
-  const { docInfo } = state;
+  const { docInfo, localState } = state;
+  const { fieldViewing } = localState;
 
   const blockRootRef = useRef<HTMLDivElement>(null);
   const [unhighlightedBlocksToDisplay, setUnhighlightedBlocksToDisplay] =
@@ -303,6 +305,58 @@ export const DocumentBlockLayer: React.FC<Props> = ({
     }
   };
 
+  const renderColoredBlocksToDisplay = useCallback(() => {
+    if (fieldViewing) {
+      return null;
+    }
+
+    return coloredBlocksToDisplay.map((coloredBlock, index) => (
+      <ColoredBlock
+        key={`${coloredBlock.block.id}${index}`}
+        block={coloredBlock.block}
+        color={coloredBlock.color}
+        docPageHeights={docPageHeights}
+        docRenderWidth={width}
+        autoScroll={index === 0}
+        opacity={BlockUtils.getColoredBlockOpacity(
+          coloredBlock,
+          state.localState.activeField,
+        )}
+        onClick={(ev) => handleOnColoredBlockClick(ev, coloredBlock)}
+      />
+    ));
+  }, [
+    docPageHeights,
+    width,
+    state.localState.activeField,
+    handleOnColoredBlockClick,
+    fieldViewing,
+  ]);
+
+  const renderColoredBlocksViewing = useCallback(() => {
+    if (fieldViewing) {
+      const { id } = fieldViewing;
+      const findColoredBlock = coloredBlocksToDisplay.find(
+        (block) => (block as FieldColoredBlock).sourceFieldId === id,
+      );
+      if (findColoredBlock) {
+        return (
+          <ColoredBlock
+            block={findColoredBlock.block}
+            color={findColoredBlock.color}
+            docPageHeights={docPageHeights}
+            docRenderWidth={width}
+            isFieldViewing
+          />
+        );
+      }
+
+      return null;
+    }
+
+    return null;
+  }, [fieldViewing, coloredBlocksToDisplay]);
+
   return (
     <div
       className={classes.Root}
@@ -313,21 +367,8 @@ export const DocumentBlockLayer: React.FC<Props> = ({
       data-testid="document-block-layer"
     >
       <Box className={classes.EndUserBlockLayerRoot}>
-        {coloredBlocksToDisplay.map((coloredBlock, index) => (
-          <ColoredBlock
-            key={`${coloredBlock.block.id}${index}`}
-            block={coloredBlock.block}
-            color={coloredBlock.color}
-            docPageHeights={docPageHeights}
-            docRenderWidth={width}
-            autoScroll={index === 0}
-            opacity={BlockUtils.getColoredBlockOpacity(
-              coloredBlock,
-              state.localState.activeField,
-            )}
-            onClick={(ev) => handleOnColoredBlockClick(ev, coloredBlock)}
-          />
-        ))}
+        {renderColoredBlocksViewing()}
+        {renderColoredBlocksToDisplay()}
         {regionsToDisplay.map((coloredRegion, index) => (
           <ColoredBlock
             key={coloredRegion.id}
