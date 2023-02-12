@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Box, makeStyles, Theme, Divider } from '@material-ui/core';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { FieldsPanelDisplayRow } from 'documentLabeler/components/fieldsPanel/fieldsPanelDisplayRow/FieldsPanelDisplayRow';
@@ -9,37 +9,68 @@ import { FieldsPanelDisplayUtils } from 'documentLabeler/common/util/FieldsPanel
 import { FieldsPanelHeader } from 'documentLabeler/components/fieldsPanel/fieldsPanelHeader/FieldsPanelHeader';
 
 import clsx from 'clsx';
+import {
+  ID_DOCUMENT_LABELER_CONTENT_ROOT,
+  ID_FIELDS_PANEL_HEADER_ROOT,
+} from 'documentLabeler/constants/DocumentLabelerConstants';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  Root: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: theme.spacing(45),
-    backgroundColor: theme.palette.common.white,
-    '& > *': {
-      width: '100%',
-      boxSizing: 'border-box',
+const DIVIDER_HEIGHT = 1;
+
+const useStyles = makeStyles<Theme, { heightOfFieldsPanel: number | null }>(
+  (theme) => ({
+    Root: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: theme.spacing(45),
+      backgroundColor: theme.palette.common.white,
+      '& > *': {
+        width: '100%',
+        boxSizing: 'border-box',
+      },
     },
-  },
-  FieldsContainer: {
-    overflowY: 'auto',
-    flex: 1,
-  },
-}));
+    FieldsContainer: {
+      overflowY: 'auto',
+      flex: 1,
+      maxHeight: ({ heightOfFieldsPanel }) => heightOfFieldsPanel || 'auto',
+    },
+  }),
+);
 
 /**
  * Component responsible for rendering and managing the Fields
  */
 export const FieldsPanel: React.FC = () => {
-  const classes = useStyles();
-
   const { state } = useDocumentLabeler();
+
+  const [heightOfFieldsPanel, setHeightOfFieldsPanel] = useState<number | null>(
+    null,
+  );
+
+  const classes = useStyles({
+    heightOfFieldsPanel,
+  });
 
   const { fields, tables } = DocumentLabelerReducerUtils.getAllColoredFields(
     state.docInfo,
   );
+
+  useLayoutEffect(() => {
+    const elDocumentLabelerContent = document.getElementById(
+      ID_DOCUMENT_LABELER_CONTENT_ROOT,
+    );
+    const elFieldsPanelHeader = document.getElementById(
+      ID_FIELDS_PANEL_HEADER_ROOT,
+    );
+
+    if (elDocumentLabelerContent && elFieldsPanelHeader) {
+      const calcHeight =
+        elDocumentLabelerContent?.offsetHeight -
+        (elFieldsPanelHeader?.offsetHeight + DIVIDER_HEIGHT);
+      setHeightOfFieldsPanel(calcHeight);
+    }
+  }, []);
 
   return (
     <Box className={classes.Root}>

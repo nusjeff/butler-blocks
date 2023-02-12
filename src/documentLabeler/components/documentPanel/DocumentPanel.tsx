@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { useDocumentDisplayer } from 'documentLabeler/components/documentPanel/documentDisplayer/useDocumentDisplayer';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 
@@ -14,8 +14,15 @@ import { FieldType } from 'common/types/DocumentLabelerTypes';
 import { withSize, SizeMeProps } from 'react-sizeme';
 import clsx from 'clsx';
 import { MimeType } from 'common/types/DocumentLabelerTypes';
+import {
+  ID_DOCUMENT_LABELER_CONTENT_ROOT,
+  ID_DOCUMENT_PANEL_TOOLBAR__ROOT,
+} from 'documentLabeler/constants/DocumentLabelerConstants';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles<
+  Theme,
+  { heightOfDocumentContainer: number | null }
+>((theme) => ({
   Root: {
     flex: 1,
   },
@@ -24,6 +31,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    maxHeight: ({ heightOfDocumentContainer }) =>
+      heightOfDocumentContainer || 'auto',
 
     '&.FullHeight': {
       height: '100%',
@@ -46,10 +55,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type Props = SizeMeProps;
 
+const SPACING_DOCUMENT_LABELER = 16;
+
 const DocumentPanelInternal = withSize({
   monitorHeight: true,
 })(({ size }: Props) => {
-  const classes = useStyles();
+  const [heightOfDocumentContainer, setHeightOfDocumentContainer] = useState<
+    null | number
+  >(null);
+
+  const classes = useStyles({ heightOfDocumentContainer });
 
   const { state } = useDocumentLabeler();
 
@@ -63,6 +78,23 @@ const DocumentPanelInternal = withSize({
   );
 
   const isPdf = state.docInfo.mimeType === MimeType.Pdf;
+
+  useLayoutEffect(() => {
+    const elDocumentLabelerContent = document.getElementById(
+      ID_DOCUMENT_LABELER_CONTENT_ROOT,
+    );
+    const elDocumentToolbar = document.getElementById(
+      ID_DOCUMENT_PANEL_TOOLBAR__ROOT,
+    );
+    if (elDocumentToolbar && elDocumentLabelerContent) {
+      const calHeight =
+        elDocumentLabelerContent.offsetHeight -
+        (elDocumentToolbar.offsetHeight + SPACING_DOCUMENT_LABELER);
+      setHeightOfDocumentContainer(calHeight);
+    } else {
+      setHeightOfDocumentContainer(null);
+    }
+  }, []);
 
   return (
     <Box className={classes.Root}>

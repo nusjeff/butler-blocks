@@ -5,7 +5,9 @@ import { FieldsPanel } from 'documentLabeler/components/fieldsPanel/FieldsPanel'
 import { DocumentPanel } from 'documentLabeler/components/documentPanel/DocumentPanel';
 import { FieldType } from 'common/types/DocumentLabelerTypes';
 import { TableLabeler } from 'documentLabeler/components/tableLabeler/TableLabeler';
+
 import clsx from 'clsx';
+import { ID_DOCUMENT_LABELER_CONTENT_ROOT } from 'documentLabeler/constants/DocumentLabelerConstants';
 
 import type { DocumentLabelerInternalState } from 'documentLabeler/state/DocumentLabelerState';
 
@@ -41,8 +43,14 @@ export const DocumentLabelerContent: React.FC = () => {
   const classes = useStyles(state);
 
   return (
-    <Box className={clsx(classes.Root, 'DocumentLabelerContent__root')}>
-      <Box className={clsx(classes.Content, 'DocumentLabelerContent__content')}>
+    <Box
+      id={ID_DOCUMENT_LABELER_CONTENT_ROOT}
+      className={clsx(classes.Root, 'DocumentLabelerContent__root')}
+    >
+      <Box
+        id="DocumentLabelerContent__content"
+        className={clsx(classes.Content, 'DocumentLabelerContent__content')}
+      >
         {state.localState.showPdf && (
           <Box
             className={clsx(

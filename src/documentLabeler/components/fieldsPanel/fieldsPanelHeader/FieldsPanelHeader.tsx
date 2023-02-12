@@ -2,10 +2,13 @@ import React from 'react';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
 
-import { Box, makeStyles, Theme } from '@material-ui/core';
+import { Box, makeStyles, Theme, BoxProps } from '@material-ui/core';
 import { DocumentLabelerState } from 'documentLabeler/state/DocumentLabelerState';
 import { DocumentPanelToolbar } from 'documentLabeler/components/documentPanel/documentPanelToolbar/DocumentPanelToolbar';
 import { Button } from 'common/button/Button';
+
+import clsx from 'clsx';
+import { ID_FIELDS_PANEL_HEADER_ROOT } from 'documentLabeler/constants/DocumentLabelerConstants';
 
 import type { ButtonProps } from 'common/button/Button';
 
@@ -30,7 +33,9 @@ const SAVE = 'Save';
  * Header component for the fields panel which contains the title of the panel
  * and the save button which dispatches the onSaveCallback action
  */
-export const FieldsPanelHeader: React.FC = () => {
+export const FieldsPanelHeader: React.FC<BoxProps> = (props) => {
+  const { className, ...boxProps } = props;
+
   const {
     saveActionButtonText,
     displayOnly,
@@ -52,7 +57,11 @@ export const FieldsPanelHeader: React.FC = () => {
   const shouldShowSaveButton = !hideSaveButton && !displayOnly;
 
   return (
-    <Box className={classes.Root}>
+    <Box
+      id={ID_FIELDS_PANEL_HEADER_ROOT}
+      className={clsx(classes.Root, className)}
+      {...boxProps}
+    >
       {!showPdf && <DocumentPanelToolbar />}
       {shouldShowSaveButton && (
         <Button

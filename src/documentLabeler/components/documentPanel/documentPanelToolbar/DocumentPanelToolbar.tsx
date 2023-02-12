@@ -11,6 +11,7 @@ import {
 } from '@material-ui/icons';
 
 import clsx from 'clsx';
+import { ID_DOCUMENT_PANEL_TOOLBAR__ROOT } from 'documentLabeler/constants/DocumentLabelerConstants';
 
 type Props = {
   onZoomIn?: (event: React.MouseEventHandler<HTMLButtonElement>) => void;
@@ -156,7 +157,10 @@ const DocumentPanelToolbar: React.FC<Props> = (props) => {
 
   if (showToolbar) {
     return (
-      <Box className={clsx(classes.Root, 'DocumentPanelToolbar__root')}>
+      <Box
+        id={ID_DOCUMENT_PANEL_TOOLBAR__ROOT}
+        className={clsx(classes.Root, 'DocumentPanelToolbar__root')}
+      >
         <Box
           className={clsx(classes.Box, classes.ShowHidePdf)}
           onClick={handleChangeShowHidePdf}
