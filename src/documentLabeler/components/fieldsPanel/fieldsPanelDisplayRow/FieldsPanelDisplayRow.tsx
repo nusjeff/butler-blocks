@@ -15,6 +15,7 @@ import { FieldType } from 'common/types/DocumentLabelerTypes';
 import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
+import { MimeType } from 'common/types/DocumentLabelerTypes';
 
 const SAVE = 'Save';
 
@@ -259,20 +260,22 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
                 <Close fontSize="small" />
               </IconButton>
 
-              <IconButton
-                className={clsx(classes.IconButton, {
-                  Hide: !hasValue,
-                })}
-                onClick={handleFocusField}
-                data-testid="clear-field-label-icon"
-              >
-                <CenterFocusStrong
-                  className={clsx({
-                    [classes.ViewingField]: fieldIsViewing,
+              {state.docInfo.mimeType !== MimeType.Pdf && (
+                <IconButton
+                  className={clsx(classes.IconButton, {
+                    Hide: !hasValue,
                   })}
-                  fontSize="small"
-                />
-              </IconButton>
+                  onClick={handleFocusField}
+                  data-testid="clear-field-label-icon"
+                >
+                  <CenterFocusStrong
+                    className={clsx({
+                      [classes.ViewingField]: fieldIsViewing,
+                    })}
+                    fontSize="small"
+                  />
+                </IconButton>
+              )}
             </Box>
           )}
         </>
