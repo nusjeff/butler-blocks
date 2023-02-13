@@ -86,10 +86,11 @@ const DocumentPanelInternal = withSize({
     const elDocumentToolbar = document.getElementById(
       ID_DOCUMENT_PANEL_TOOLBAR__ROOT,
     );
-    if (elDocumentToolbar && elDocumentLabelerContent) {
+    if (elDocumentLabelerContent) {
+      const heightDocumentToolbar = elDocumentToolbar?.offsetHeight || 0;
       const calHeight =
         elDocumentLabelerContent.offsetHeight -
-        (elDocumentToolbar.offsetHeight + SPACING_DOCUMENT_LABELER);
+        (heightDocumentToolbar + SPACING_DOCUMENT_LABELER);
       setHeightOfDocumentContainer(calHeight);
     } else {
       setHeightOfDocumentContainer(null);

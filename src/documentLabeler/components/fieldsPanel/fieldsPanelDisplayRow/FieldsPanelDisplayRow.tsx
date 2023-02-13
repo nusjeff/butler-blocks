@@ -164,8 +164,12 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
           type,
         },
       });
+      if (!fieldIsViewing) {
+        setLocalValue(value);
+        setEditingText(true);
+      }
     },
-    [state.localState.fieldViewing, id, type],
+    [fieldIsViewing, id, type],
   );
 
   return (
@@ -181,6 +185,7 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
       <Box className={classes.FieldInfoContainer}>
         {editingText ? (
           <OutlinedTextField
+            autoFocus
             className="FieldsPanelDisplayRow__textField"
             value={localValue}
             placeholder={EMPTY_VALUE}
@@ -222,6 +227,10 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
               onClick={(event) => {
                 event.stopPropagation();
                 handleSaveValue();
+                dispatch({
+                  type: 'setViewingField',
+                  payload: undefined,
+                });
               }}
               data-testid="save-field-value-btn"
             >
