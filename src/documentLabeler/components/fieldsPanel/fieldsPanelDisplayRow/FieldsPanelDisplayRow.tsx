@@ -1,3 +1,6 @@
+import React, { useCallback, useState } from 'react';
+import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
+
 import {
   alpha,
   Box,
@@ -6,18 +9,18 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors';
+import { blue, red } from '@material-ui/core/colors';
 import { Close, Create, CenterFocusStrong } from '@material-ui/icons';
 import { OutlinedTextField } from 'common/display/OutlinedTextField/OutlinedTextField';
 import { TruncatableTypography } from 'common/display/TruncatableTypography/TruncatableTypography';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { FieldType } from 'common/types/DocumentLabelerTypes';
-import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
-import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
 import { MimeType } from 'common/types/DocumentLabelerTypes';
 
 const SAVE = 'Save';
+const CANCEL = 'Cancel';
+const CLOSE = 'Close';
 
 const EMPTY_VALUE = 'No Value Specified';
 
@@ -85,6 +88,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   ViewingField: {
     color: blue[500],
+  },
+  CancelButton: {
+    color: red[300],
   },
 }));
 
@@ -172,6 +178,78 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
     [fieldIsViewing, id, type],
   );
 
+  const handleCloseEditField = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
+      setEditingText(false);
+      dispatch({
+        type: 'setViewingField',
+        payload: undefined,
+      });
+    },
+    [],
+  );
+
+  const handleCancelEditField = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
+      setEditingText(false);
+      setLocalValue(value);
+      dispatch({
+        type: 'setViewingField',
+        payload: undefined,
+      });
+    },
+    [value],
+  );
+
+  const renderButtonWhenEditing = useCallback(() => {
+    if (localValue === value) {
+      return (
+        <Button
+          variant="text"
+          color="secondary"
+          className={classes.Button}
+          disableElevation
+          onClick={handleCloseEditField}
+        >
+          {CLOSE}
+        </Button>
+      );
+    }
+
+    return (
+      <>
+        <Button
+          variant="text"
+          color="primary"
+          className={classes.Button}
+          disableElevation
+          onClick={(event) => {
+            event.stopPropagation();
+            handleSaveValue();
+            dispatch({
+              type: 'setViewingField',
+              payload: undefined,
+            });
+          }}
+          data-testid="save-field-value-btn"
+        >
+          {SAVE}
+        </Button>
+        <Button
+          variant="text"
+          color="secondary"
+          className={clsx(classes.Button, classes.CancelButton)}
+          disableElevation
+          onClick={handleCancelEditField}
+        >
+          {CANCEL}
+        </Button>
+      </>
+    );
+  }, [localValue, value, handleCloseEditField, handleCancelEditField]);
+
   return (
     <Box
       className={clsx(classes.Root, 'FieldsPanelDisplayRow__root')}
@@ -219,23 +297,7 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
       {!displayOnly && (
         <>
           {editingText ? (
-            <Button
-              variant="text"
-              color="primary"
-              className={classes.Button}
-              disableElevation
-              onClick={(event) => {
-                event.stopPropagation();
-                handleSaveValue();
-                dispatch({
-                  type: 'setViewingField',
-                  payload: undefined,
-                });
-              }}
-              data-testid="save-field-value-btn"
-            >
-              {SAVE}
-            </Button>
+            renderButtonWhenEditing()
           ) : (
             <Box
               className={clsx(
