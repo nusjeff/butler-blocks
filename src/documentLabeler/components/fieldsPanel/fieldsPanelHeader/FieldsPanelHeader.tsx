@@ -19,8 +19,11 @@ const useStyles = makeStyles<Theme, { showPdf: boolean }>((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  ButtonRoot: {
+    width: ({ showPdf }) => (showPdf ? '100%' : 'auto'),
+  },
   Button: {
-    width: theme.spacing(12),
+    width: ({ showPdf }) => (showPdf ? '100%' : theme.spacing(12)),
     textTransform: 'none',
   },
 }));
@@ -68,6 +71,7 @@ export const FieldsPanelHeader: React.FC<BoxProps> = (props) => {
           variant="contained"
           color="primary"
           className={classes.Button}
+          containerClassName={classes.ButtonRoot}
           onClick={onSaveClick}
           disableElevation
           {...(saveActionButtonProps as ButtonProps)}

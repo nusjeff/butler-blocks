@@ -9,6 +9,7 @@ import clsx from 'clsx';
 
 export interface ButtonProps extends MuiButtonProps {
   loading: boolean;
+  containerClassName?: string;
 }
 
 const useStyles = makeStyles(() => ({
@@ -24,12 +25,19 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const Button: React.FC<ButtonProps> = (props) => {
-  const { loading, disabled, className, children, ...buttonProps } = props;
+  const {
+    loading,
+    disabled,
+    className,
+    children,
+    containerClassName,
+    ...buttonProps
+  } = props;
 
   const classes = useStyles();
 
   return (
-    <div className={classes.Root}>
+    <div className={clsx(classes.Root, containerClassName)}>
       <MuiButton
         variant="contained"
         color="primary"
