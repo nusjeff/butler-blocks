@@ -64,6 +64,7 @@ const selectedState: DocumentLabelerInternalState = {
     zoomMinScale: 0.6,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderedImgHeight: null as any,
+    isModifiedField: false,
   },
 };
 

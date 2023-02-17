@@ -201,6 +201,11 @@ export type SetViewingField = {
   payload: ActiveField | undefined;
 };
 
+export type SetIsModifieldField = {
+  type: 'setIsModifiledField';
+  payload: boolean;
+};
+
 const removeBlockFromTableCell = (
   state: DocumentLabelerInternalState,
   action: RemoveBlockFromFieldAction,

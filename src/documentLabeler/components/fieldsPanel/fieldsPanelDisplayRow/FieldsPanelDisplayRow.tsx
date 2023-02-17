@@ -157,6 +157,10 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
         textOverride: localValue,
       },
     });
+    dispatch({
+      type: 'setIsModifiledField',
+      payload: true,
+    });
     setEditingText(false);
   };
 
@@ -262,16 +266,27 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
     >
       <Box className={classes.FieldInfoContainer}>
         {editingText ? (
-          <OutlinedTextField
-            autoFocus
-            className="FieldsPanelDisplayRow__textField"
-            value={localValue}
-            placeholder={EMPTY_VALUE}
-            onChange={(e) => setLocalValue(e.target.value)}
-            inputProps={{
-              'data-testid': 'field-value-input',
+          <form
+            onSubmit={(event) => {
+              event.stopPropagation();
+              handleSaveValue();
+              dispatch({
+                type: 'setViewingField',
+                payload: undefined,
+              });
             }}
-          />
+          >
+            <OutlinedTextField
+              autoFocus
+              className="FieldsPanelDisplayRow__textField"
+              value={localValue}
+              placeholder={EMPTY_VALUE}
+              onChange={(e) => setLocalValue(e.target.value)}
+              inputProps={{
+                'data-testid': 'field-value-input',
+              }}
+            />
+          </form>
         ) : (
           <>
             <Box className={classes.TopRowContainer}>

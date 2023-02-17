@@ -47,15 +47,20 @@ export const FieldsPanelHeader: React.FC<BoxProps> = (props) => {
     onSaveCallback,
   } = useBBConfiguration();
 
-  const { state } = useDocumentLabeler();
-  const { showPdf } = state.localState;
+  const { state, dispatch } = useDocumentLabeler();
+  const { showPdf, isModifiedField } = state.localState;
 
   const classes = useStyles({ showPdf });
 
-  const onSaveClick = () =>
+  const onSaveClick = () => {
     onSaveCallback(
       DocumentLabelerState.convertInternalStateToOutputData(state),
     );
+    dispatch({
+      type: 'setIsModifiledField',
+      payload: false,
+    });
+  };
 
   const shouldShowSaveButton = !hideSaveButton && !displayOnly;
 
@@ -74,6 +79,7 @@ export const FieldsPanelHeader: React.FC<BoxProps> = (props) => {
           containerClassName={classes.ButtonRoot}
           onClick={onSaveClick}
           disableElevation
+          disabled={!isModifiedField}
           {...(saveActionButtonProps as ButtonProps)}
         >
           {saveActionButtonText || SAVE}

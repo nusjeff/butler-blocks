@@ -62,6 +62,7 @@ export type DocumentLabelerLocalState = {
   zoomMinScale: number;
   renderedImgHeight: number;
   fieldViewing?: ActiveField;
+  isModifiedField: boolean;
 };
 
 // Internal State, used to maintain local state within the Document Labeler
@@ -103,6 +104,7 @@ const generateInitialState = (
       fieldViewing: undefined,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       renderedImgHeight: null as any,
+      isModifiedField: false,
     },
   };
 };

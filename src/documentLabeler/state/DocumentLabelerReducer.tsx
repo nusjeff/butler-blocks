@@ -13,6 +13,7 @@ import {
   DecreasePdfScale,
   SetImageHeight,
   SetViewingField,
+  SetIsModifieldField,
 } from 'documentLabeler/state/BlockReducerUtils';
 import { DocumentLabelerInternalState } from 'documentLabeler/state/DocumentLabelerState';
 import {
@@ -45,7 +46,8 @@ type DocumentLabelerDispatchAction =
   | IncreasePdfScale
   | DecreasePdfScale
   | SetImageHeight
-  | SetViewingField;
+  | SetViewingField
+  | SetIsModifieldField;
 
 export type DocumentLabelerDispatch = (
   action: DocumentLabelerDispatchAction,
@@ -161,6 +163,16 @@ export const documentLabelerReducer = (
           ...state.localState,
           activeField: undefined,
           fieldViewing: newViewingField,
+        },
+      };
+    }
+
+    case 'setIsModifiledField': {
+      return {
+        ...state,
+        localState: {
+          ...state.localState,
+          isModifiedField: action.payload,
         },
       };
     }
