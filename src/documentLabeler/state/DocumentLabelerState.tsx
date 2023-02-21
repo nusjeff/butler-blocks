@@ -104,7 +104,7 @@ const generateInitialState = (
       fieldViewing: undefined,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       renderedImgHeight: null as any,
-      isModifiedField: false,
+      isModifiedField: true,
     },
   };
 };
