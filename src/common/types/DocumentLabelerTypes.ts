@@ -1,3 +1,5 @@
+import { DocumentLabelerData } from 'documentLabeler/state/DocumentLabelerState';
+
 export enum BlockType {
   Word = 'Word',
   Checkbox = 'Checkbox',
@@ -277,11 +279,11 @@ export type TrainingDocumentResultDto = {
   tables: Array<TableLabelOutputDto>;
 };
 
-export type TrainingDocumentLabelsDto = {
+export interface TrainingDocumentLabelsDto extends DocumentLabelerData {
   modelId: string;
   docId: string;
   results: TrainingDocumentResultDto;
-};
+}
 
 export type ExtractedFieldDto = {
   fieldName: string;

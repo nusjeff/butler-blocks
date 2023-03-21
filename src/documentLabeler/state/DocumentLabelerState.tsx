@@ -135,6 +135,11 @@ const convertInternalStateToOutputData = (
       signatures: trainingSignatureFields,
       tables: trainingTables,
     },
+    documentId: state.docInfo.documentId,
+    fileName: state.docInfo.fileName,
+    mimeType: state.docInfo.mimeType,
+    tempDocUrl: state.docInfo.tempDocUrl,
+    wordBlocks: state.docInfo.wordBlocks,
   };
   const extractedFormFields: Array<ExtractedFieldDto> =
     state.docInfo.results.fields.map((field) => ({
