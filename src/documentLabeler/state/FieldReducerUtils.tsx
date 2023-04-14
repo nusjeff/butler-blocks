@@ -2,6 +2,7 @@ import { DocumentLabelerReducerUtils } from 'documentLabeler/state/DocumentLabel
 import {
   ActiveTable,
   DocumentLabelerInternalState,
+  DocumentLabelerData,
 } from 'documentLabeler/state/DocumentLabelerState';
 import {
   Confidence,
@@ -80,6 +81,11 @@ export type SetTextFieldOverrideAction = {
     fieldId: string;
     textOverride: string;
   };
+};
+
+export type SetDocInfo = {
+  type: 'setDocInfo';
+  payload: DocumentLabelerData;
 };
 
 const setTextFieldOverride = (

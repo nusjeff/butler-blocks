@@ -23,6 +23,7 @@ import {
   RemoveRowFromTableAction,
   SetTableCellTextOverrideAction,
   SetTextFieldOverrideAction,
+  SetDocInfo,
 } from 'documentLabeler/state/FieldReducerUtils';
 import {
   AddRegionToActiveFieldAction,
@@ -47,7 +48,8 @@ type DocumentLabelerDispatchAction =
   | DecreasePdfScale
   | SetImageHeight
   | SetViewingField
-  | SetIsModifieldField;
+  | SetIsModifieldField
+  | SetDocInfo;
 
 export type DocumentLabelerDispatch = (
   action: DocumentLabelerDispatchAction,
@@ -174,6 +176,13 @@ export const documentLabelerReducer = (
           ...state.localState,
           isModifiedField: action.payload,
         },
+      };
+    }
+
+    case 'setDocInfo': {
+      return {
+        ...state,
+        docInfo: action.payload,
       };
     }
 

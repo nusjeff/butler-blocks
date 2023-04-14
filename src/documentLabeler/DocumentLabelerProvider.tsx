@@ -48,6 +48,13 @@ export const DocumentLabelerProvider: React.FC<Props> = ({
     }
   }, [state.docInfo]);
 
+  useEffect(() => {
+    dispatch({
+      type: 'setDocInfo',
+      payload: initialState.data,
+    });
+  }, [initialState.data]);
+
   return (
     <DocumentLabelerStateContext.Provider value={state}>
       <DocumentLabelerDispatchContext.Provider value={dispatch}>
