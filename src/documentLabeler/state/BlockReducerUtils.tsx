@@ -100,11 +100,15 @@ const addBlockToActiveFormField = (
   const blocksToAdd = action.payload.blocks.filter(
     (block) => !field.blocks.some((activeBlock) => activeBlock.id === block.id),
   );
+  const newBlocks = [...field.blocks, ...blocksToAdd];
+
   const updatedField: FieldLabelDto = {
     ...field,
     region: undefined,
-    blocks: [...field.blocks, ...blocksToAdd],
+    blocks: newBlocks,
+    textOverride: newBlocks.map(({ text }) => text).join(' '),
   };
+
   const updatedFields = state.docInfo.results.fields.map((field) => {
     if (field.id === updatedField.id) {
       return updatedField;
@@ -134,6 +138,10 @@ const addBlockToActiveFormField = (
   }));
   return {
     ...state,
+    localState: {
+      ...state.localState,
+      isModifiedField: true,
+    },
     docInfo: {
       ...state.docInfo,
       results: {
