@@ -88,6 +88,35 @@ const updateStateWithNewField = (
   };
 };
 
+export type UpdateTextOverridePayload = {
+  fieldId: string;
+  textOverride: string;
+};
+
+const updateTextOverride = (
+  state: DocumentLabelerInternalState,
+  payload: UpdateTextOverridePayload,
+) => {
+  const { fieldId, textOverride } = payload;
+
+  const { field, idx } = DocumentLabelerReducerUtils.getFieldFromState(
+    state,
+    fieldId,
+  );
+
+  const updatedField: FieldLabelDto = {
+    ...field,
+    textOverride: textOverride,
+  };
+  const result = DocumentLabelerReducerUtils.updateStateWithNewField(
+    state,
+    updatedField,
+    idx,
+  );
+
+  return result;
+};
+
 const updateStateWithNewTable = (
   state: DocumentLabelerInternalState,
   updatedTable: TableLabelDto,
@@ -237,4 +266,5 @@ export const DocumentLabelerReducerUtils = {
   updateStateWithNewField,
   updateStateWithNewTable,
   updateTableWithNewCell,
+  updateTextOverride,
 };

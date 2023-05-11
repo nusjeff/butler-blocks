@@ -8,6 +8,11 @@ export type SetActiveFieldAction = {
   payload: ActiveField | undefined;
 };
 
+export type SetState = {
+  type: 'setState';
+  payload: DocumentLabelerInternalState;
+};
+
 const setActiveField = (
   state: DocumentLabelerInternalState,
   action: SetActiveFieldAction,

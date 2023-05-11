@@ -92,20 +92,7 @@ const setTextFieldOverride = (
   state: DocumentLabelerInternalState,
   action: SetTextFieldOverrideAction,
 ): DocumentLabelerInternalState => {
-  const { fieldId, textOverride } = action.payload;
-  const { field, idx } = DocumentLabelerReducerUtils.getFieldFromState(
-    state,
-    fieldId,
-  );
-  const updatedField: FieldLabelDto = {
-    ...field,
-    textOverride: textOverride,
-  };
-  return DocumentLabelerReducerUtils.updateStateWithNewField(
-    state,
-    updatedField,
-    idx,
-  );
+  return DocumentLabelerReducerUtils.updateTextOverride(state, action.payload);
 };
 
 export type SetTableCellTextOverrideAction = {

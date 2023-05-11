@@ -2,6 +2,7 @@ import { TypesafeUnreachableError } from 'common/util/error';
 import {
   ActiveFieldReducerUtils,
   SetActiveFieldAction,
+  SetState,
 } from 'documentLabeler/state/ActiveFieldReducerUtils';
 import {
   AddBlockToActiveFieldAction,
@@ -49,7 +50,8 @@ type DocumentLabelerDispatchAction =
   | SetImageHeight
   | SetViewingField
   | SetIsModifieldField
-  | SetDocInfo;
+  | SetDocInfo
+  | SetState;
 
 export type DocumentLabelerDispatch = (
   action: DocumentLabelerDispatchAction,
@@ -184,6 +186,10 @@ export const documentLabelerReducer = (
         ...state,
         docInfo: action.payload,
       };
+    }
+
+    case 'setState': {
+      return action.payload;
     }
 
     default:

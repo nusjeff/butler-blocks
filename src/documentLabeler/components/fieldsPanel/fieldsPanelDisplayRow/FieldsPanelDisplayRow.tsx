@@ -17,6 +17,8 @@ import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { FieldType } from 'common/types/DocumentLabelerTypes';
 import clsx from 'clsx';
 import { MimeType } from 'common/types/DocumentLabelerTypes';
+import { DocumentLabelerReducerUtils } from 'documentLabeler/state/DocumentLabelerReducerUtils';
+import { DocumentLabelerState } from 'documentLabeler/state/DocumentLabelerState';
 
 const SAVE = 'Save';
 const CANCEL = 'Cancel';
@@ -110,7 +112,8 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  const { fieldDisplayNameFormatter, displayOnly } = useBBConfiguration();
+  const { fieldDisplayNameFormatter, displayOnly, onSaveCallback } =
+    useBBConfiguration();
   const { state, dispatch } = useDocumentLabeler();
 
   const [editingText, setEditingText] = useState<boolean>(false);
@@ -150,18 +153,18 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
     });
 
   const handleSaveValue = () => {
-    dispatch({
-      type: 'setFieldTextOverride',
-      payload: {
-        fieldId: id,
-        textOverride: localValue,
-      },
+    const result = DocumentLabelerReducerUtils.updateTextOverride(state, {
+      fieldId: id,
+      textOverride: localValue,
     });
     dispatch({
-      type: 'setIsModifiledField',
-      payload: true,
+      type: 'setState',
+      payload: result,
     });
     setEditingText(false);
+    onSaveCallback(
+      DocumentLabelerState.convertInternalStateToOutputData(result),
+    );
   };
 
   const handleFocusField = useCallback(
