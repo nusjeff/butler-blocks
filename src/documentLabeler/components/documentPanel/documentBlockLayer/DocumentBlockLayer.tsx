@@ -19,6 +19,7 @@ import {
 } from 'common/types/DocumentLabelerTypes';
 import { useCallback, useRef, useState } from 'react';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
+import { DocumentLabelerState } from 'documentLabeler/state/DocumentLabelerState';
 
 type Props = {
   width: number;
@@ -50,6 +51,8 @@ export const DocumentBlockLayer: React.FC<Props> = ({
   const classes = useStyles();
 
   const { state, dispatch } = useDocumentLabeler();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [timeoutId, setTimeoutId] = useState<any>(null);
 
   const { docInfo, localState } = state;
   const { fieldViewing } = localState;
@@ -71,7 +74,7 @@ export const DocumentBlockLayer: React.FC<Props> = ({
       )
     : null;
 
-  const { displayOnly } = useBBConfiguration();
+  const { displayOnly, onSaveCallback } = useBBConfiguration();
   const coloredBlocks = BlockUtils.getColoredBlocks(state);
 
   const coloredBlocksToDisplay = BlockUtils.getColoredBlocksToDisplay(
@@ -190,11 +193,25 @@ export const DocumentBlockLayer: React.FC<Props> = ({
     }
   };
 
+  const handleAutoCallSaveCallback = useCallback(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    const newTimeoutId = setTimeout(() => {
+      onSaveCallback(
+        DocumentLabelerState.convertInternalStateToOutputData(state),
+      );
+      clearTimeout(timeoutId);
+    }, 10000);
+    setTimeoutId(newTimeoutId);
+  }, [timeoutId]);
+
   const handleOnMouseUp = (evt: React.MouseEvent) => {
     evt.stopPropagation();
     if (isDragging) {
       onDragEnd();
     }
+    handleAutoCallSaveCallback();
     const shouldLabelRegion =
       state.localState.activeField &&
       (state.localState.selectionType === LabelingSelectionType.Region ||
