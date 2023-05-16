@@ -20,6 +20,7 @@ import {
 import { useCallback, useRef, useState } from 'react';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
 import { DocumentLabelerState } from 'documentLabeler/state/DocumentLabelerState';
+import { DELAY_TIME_TO_CALL_SAVE_CALLBACK } from 'utils/constants';
 
 type Props = {
   width: number;
@@ -202,7 +203,7 @@ export const DocumentBlockLayer: React.FC<Props> = ({
         DocumentLabelerState.convertInternalStateToOutputData(state),
       );
       clearTimeout(timeoutId);
-    }, 10000);
+    }, DELAY_TIME_TO_CALL_SAVE_CALLBACK);
     setTimeoutId(newTimeoutId);
   }, [timeoutId]);
 

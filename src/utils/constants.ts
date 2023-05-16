@@ -1,0 +1,1 @@
+export const DELAY_TIME_TO_CALL_SAVE_CALLBACK = 10000;
