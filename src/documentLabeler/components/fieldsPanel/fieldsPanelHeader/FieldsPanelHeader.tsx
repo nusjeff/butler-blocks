@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useDocumentLabeler } from 'documentLabeler/DocumentLabelerProvider';
 import { useBBConfiguration } from 'documentLabeler/context/BBConfigurationProvider';
 
@@ -9,7 +8,6 @@ import { Button } from 'common/button/Button';
 
 import clsx from 'clsx';
 import { ID_FIELDS_PANEL_HEADER_ROOT } from 'documentLabeler/constants/DocumentLabelerConstants';
-import { DELAY_TIME_TO_CALL_SAVE_CALLBACK } from 'utils/constants';
 
 import type { ButtonProps } from 'common/button/Button';
 
@@ -52,20 +50,10 @@ export const FieldsPanelHeader: React.FC<BoxProps> = (props) => {
   const { showPdf, isModifiedField } = state.localState;
 
   const classes = useStyles({ showPdf });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [timeoutId, setTimeoutId] = useState<any>(null);
-
   const onSaveClick = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    const newTimeoutId = setTimeout(() => {
-      onSaveCallback(
-        DocumentLabelerState.convertInternalStateToOutputData(state),
-      );
-      clearTimeout(timeoutId);
-    }, DELAY_TIME_TO_CALL_SAVE_CALLBACK);
-    setTimeoutId(newTimeoutId);
+    onSaveCallback(
+      DocumentLabelerState.convertInternalStateToOutputData(state),
+    );
 
     dispatch({
       type: 'setIsModifiledField',

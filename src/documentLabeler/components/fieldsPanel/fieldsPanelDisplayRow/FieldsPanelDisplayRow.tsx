@@ -19,6 +19,7 @@ import clsx from 'clsx';
 import { MimeType } from 'common/types/DocumentLabelerTypes';
 import { DocumentLabelerReducerUtils } from 'documentLabeler/state/DocumentLabelerReducerUtils';
 import { DocumentLabelerState } from 'documentLabeler/state/DocumentLabelerState';
+import { DELAY_TIME_TO_CALL_SAVE_CALLBACK } from 'utils/constants';
 
 const SAVE = 'Save';
 const CANCEL = 'Cancel';
@@ -118,6 +119,8 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
 
   const [editingText, setEditingText] = useState<boolean>(false);
   const [localValue, setLocalValue] = useState<string>(value);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [timeoutId, setTimeoutId] = useState<any>(null);
 
   const fieldIsActive = state.localState.activeField?.id === id;
   const fieldIsViewing = state.localState.fieldViewing?.id === id;
@@ -162,9 +165,16 @@ export const FieldsPanelDisplayRow: React.FC<Props> = ({
       payload: result,
     });
     setEditingText(false);
-    onSaveCallback(
-      DocumentLabelerState.convertInternalStateToOutputData(result),
-    );
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    const newTimeoutId = setTimeout(() => {
+      onSaveCallback(
+        DocumentLabelerState.convertInternalStateToOutputData(result),
+      );
+      clearTimeout(timeoutId);
+    }, DELAY_TIME_TO_CALL_SAVE_CALLBACK);
+    setTimeoutId(newTimeoutId);
   };
 
   const handleFocusField = useCallback(
